@@ -37,7 +37,9 @@ normal_distribution<double> normal(0.0,1.0);
 double randn(){
 	return normal(generator);
 }
-void randn(Vector& v){
+
+void randn(Vector& v, int K){
+	v.resize(K);
 	for(int i=0;i<v.size();i++)
 		v[i] = randn();
 }
@@ -119,6 +121,24 @@ void normalize(Vector& x, Vector& x2){
 	x2.resize( x.size() );
 	for(int i=0;i<x.size();i++)
 		x2[i] = x[i]/sum;
+}
+
+void mat_scale( Matrix& A, double s, Matrix& B ){
+	
+	B.resize(A.size());
+	for(int i=0;i<B.size();i++){
+		B[i].resize(A[i].size());
+		for(int j=0;j<B[i].size();j++)
+			B[i][j] = s*A[i][j];
+	}
+}
+
+double sum(Vector& v){
+	
+	double s=0.0;
+	for(int i=0;i<v.size();i++)
+		s += v[i];
+	return s;
 }
 
 #endif
