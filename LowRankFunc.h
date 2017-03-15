@@ -29,6 +29,8 @@ class LowRankFunc:public ExtensibleFunction{
 			for(int k=0;k<_K;k++)
 				_AtX[j][k] = 0.0;
 		}
+		
+		_sum_C_cache = -1e300;
 	}
 	
 	void getDim(int& N, int& K){
@@ -100,6 +102,13 @@ class LowRankFunc:public ExtensibleFunction{
 			for(int k=0;k<_K;k++)
 				g[k] += _AtX[j][k]*Aij;
 		}
+		for(int k=0;k<_K;k++)
+			g[k] *= 2.0;
+		///////////////////////////////////adding eye(N)
+		/*for(int k=0;k<_K;k++){
+			g[k] -= 0.2*_X[i][k];
+		}*/
+		/////////////////////////////////////////////
 	}
 	
 	double funVal(){
@@ -107,9 +116,16 @@ class LowRankFunc:public ExtensibleFunction{
 		for(int j=0;j<_D;j++)
 			for(int k=0;k<_K;k++)
 				sum += _AtX[j][k]*_AtX[j][k];
+		//////////////////////////////////////////////////////Adding eye(N)
+		/*for(int j=0;j<_D;j++){
+			for(int k=0;k<_K;k++){
+				sum -= 0.1*_X[j][k]*_X[j][k];
+			}
+		}*/
+		///////////////////////////////////////////////////////////
 		return sum;
 	}
-	
+
 	void sum_by_row(Vector::iterator s_begin, Vector::iterator s_end){
 		
 		assert( s_begin+_N == s_end );
@@ -129,6 +145,11 @@ class LowRankFunc:public ExtensibleFunction{
 			}
 			*(s_begin+i) = sum;
 		}
+		//////////////////////////////////adding eye(N)
+		/*for(int i=0;i<_N;i++){
+			*(s_begin+i) -= 0.1;
+		}*/
+		////////////////////////////////////////////////
 	}
 	
 	void Xtv(Vector& v, Vector& Xtv){
@@ -140,7 +161,27 @@ class LowRankFunc:public ExtensibleFunction{
 				Xtv[k] += v[i]*_X[i][k];
 
 	}
+	
+	virtual double sum_C(){
+		
+		if( _sum_C_cache == -1e300 ){
+			Vector tmp;
+			tmp.resize(_N);
+			sum_by_row(tmp.begin(), tmp.end());
+			double sum = 0.0;
+			for(int i=0;i<_N;i++)
+				sum += tmp[i];
+			_sum_C_cache = sum;
+			return sum;
+		}else
+			return _sum_C_cache;
 
+	}
+	
+	virtual double funVal_with_constant(){
+		return 0.0;
+	}
+	
 	private:
 	Matrix _A; //N by D
 	Matrix _X; //N by K
@@ -148,4 +189,6 @@ class LowRankFunc:public ExtensibleFunction{
 	int _N;
 	int _D;
 	int _K;
+
+	double _sum_C_cache;
 };
