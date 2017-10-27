@@ -5,7 +5,7 @@
 #include <omp.h>
 #include <algorithm>
 #include "IQPSolve.h"
-#include "SparseFunc.h"
+#include "SparseAATFunc.h"
 #include "mex.h"
 
 using namespace std;
