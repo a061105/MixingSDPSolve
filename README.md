@@ -4,9 +4,9 @@ To Compile: (in matlab)
 	
 	mex MixMaxCutDense.cpp 
 	mex MixMaxCut.cpp
-	mex MixMaxCutSparse.cpp
-	mex MixMaxCutComposite.cpp
-
+	mex -largeArrayDims MixMaxCutSparse.cpp
+	mex -largeArrayDims MixMaxCutComposite.cpp
+	mex -largeArrayDims MixMaxCutSparseAAT.cpp
 
 Usage of MixMaxCutDense (in matlab):
 
