@@ -26,13 +26,12 @@ Usage of MixMaxCut (in matlab):
 
 Usage of MixMaxCutSparse (in matlab):
 	
-	z = MixMaxCutSparse( );
-
-	(find max_{z} < S , zz'> )
+	Usage:function z = MixMaxCutSparse(C_sparse, sdp_rank, iter)
+	(find max_{z} < C_sparse , zz'> )
 
 
 Usage of MixMaxCutComposite (in matlab):
 	
-	z = MixMaxCutComposite(S, b, L, sdp_rank, iter)
+	z = MixMaxCutComposite(C_sparse, b, L, sdp_rank, iter)
 
-	(find max_{z} < S + b*LL' , zz'> )
+	(find max_{z} < C_sparse + b*LL' , zz'> )

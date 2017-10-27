@@ -15,7 +15,7 @@ using namespace std;
 
 void usage()
 {
-	mexErrMsgTxt("Usage:function z = MixMaxCutComposite(S, b, L, sdp_rank, iter)");
+	mexErrMsgTxt("Usage:function z = MixMaxCutComposite(C_sparse, b, L, sdp_rank, iter)");
 }
 
 
