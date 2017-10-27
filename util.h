@@ -22,6 +22,7 @@ using namespace std;
 typedef vector<double> Vector;
 typedef vector<Vector> Matrix;
 typedef vector<pair<int,double> > SparseVec;
+typedef vector<SparseVec> SparseMat;
 typedef unordered_map<int,double> HashVec;
 typedef double Float;
 const int LINE_LEN = 100000000;

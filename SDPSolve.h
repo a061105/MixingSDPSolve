@@ -53,6 +53,7 @@ class MixSDPSolve: public SDPSolve{
 		for(int i=0;i<N;i++)
 			indexes[i] = i;
 		
+		double obj=1e300, last_obj = 1e300, prec=1e300;
 		Vector g;
 		g.resize(K);
 		Vector tmp_Xi;
@@ -74,10 +75,16 @@ class MixSDPSolve: public SDPSolve{
 			}
 			
 			//if( iter % 1 == 0 )
-				//cerr << "SDPiter=" << iter << ", obj=" <<  f->funVal_with_constant()  << endl;
+			//	cerr << "SDPiter=" << iter << ", obj=" <<  f->funVal_with_constant()  << endl;
 			
+			obj = f->funVal_with_constant();
+			prec = obj - last_obj;
+			
+			last_obj = obj;
 			iter++;
 		}
+
+		cerr << "SDP precision = " << prec << endl;
 	}
 
 	private:

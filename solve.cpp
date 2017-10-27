@@ -1,6 +1,7 @@
 #include "MaxCutSolve.h"
 #include "IQPSolve.h"
 #include "LowRankFunc.h"
+#include "SimpleFun.h"
 
 int main(){
 	srand(time(NULL));
