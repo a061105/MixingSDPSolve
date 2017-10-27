@@ -4,12 +4,12 @@
  * 
  * 	tr(X'AA'X)
  *
- * where X:N*K, A:N*D.
+ * where X:N*K, A:N*D is a sparse matrix.
  */
 class SparseAATFunc:public ExtensibleFunction{
 	
 	public:
-	LowRankFunc(int N, int D, int K, Matrix& A){
+	SparseAATFunc(int N, int D, int K, SparseMat& A){
 		
 		_N = N;
 		_D = D;
@@ -43,9 +43,10 @@ class SparseAATFunc:public ExtensibleFunction{
 		Vector x_old(_X[i].begin(), _X[i].end());
 		
 		//update AtX
-		Vector& Ai = _A[i];
-		for(int j=0;j<Ai.size();j++){
-			double Aij = Ai[j];
+		SparseVec& Ai = _A[i];
+		for(SparseVec::iterator it=Ai.begin(); it!=Ai.end(); it++){
+			int j = it->first;
+			double Aij = it->second;
 			for(int k=0;k<x_new.size();k++){
 				_AtX[j][k] += Aij*(x_new[k]-x_old[k]);
 			}
@@ -59,9 +60,10 @@ class SparseAATFunc:public ExtensibleFunction{
 		double xik_old = _X[i][k];
 		
 		//update AtX
-		Vector& Ai = _A[i];
-		for(int j=0;j<Ai.size();j++){
-			double Aij = Ai[j];
+		SparseVec& Ai = _A[i];
+		for(SparseVec::iterator it=Ai.begin(); it!=Ai.end(); it++){
+			int j = it->first;
+			double Aij = it->second;
 			_AtX[j][k] += Aij*(xik - xik_old);
 		}
 		
@@ -73,8 +75,8 @@ class SparseAATFunc:public ExtensibleFunction{
 		Vector At_row_sum;
 		At_row_sum.resize(_D, 0.0);
 		for(int i=0;i<_N;i++){
-			for(int j=0;j<_D;j++){
-				At_row_sum[j] += _A[i][j];
+			for(SparseVec::iterator it=_A[i].begin(); it!=_A[i].end(); it++){
+				At_row_sum[it->first] += it->second;
 			}
 		}
 		
@@ -96,9 +98,10 @@ class SparseAATFunc:public ExtensibleFunction{
 		for(int k=0;k<_K;k++)
 			g[k] = 0.0;
 
-		Vector& Ai = _A[i];
-		for(int j=0;j<_D;j++){
-			double Aij = Ai[j];
+		SparseVec& Ai = _A[i];
+		for(SparseVec::iterator it=Ai.begin(); it!=Ai.end(); it++){
+			int j = it->first;
+			double Aij = it->second;
 			for(int k=0;k<_K;k++)
 				g[k] += _AtX[j][k]*Aij;
 		}
@@ -134,14 +137,14 @@ class SparseAATFunc:public ExtensibleFunction{
 		Vector tmp;
 		tmp.resize(_D,0.0);
 		for(int i=0;i<_N;i++)
-			for(int j=0;j<_D;j++)
-				tmp[j] += _A[i][j];
+			for(SparseVec::iterator it=_A[i].begin(); it!=_A[i].end(); it++)
+				tmp[it->first] += it->second;
 		
 		// AA'1 = A(A'1)
 		for(int i=0;i<_N;i++){
 			double sum = 0.0;
-			for(int j=0;j<_D;j++){
-				sum += _A[i][j]*tmp[j];
+			for(SparseVec::iterator it=_A[i].begin(); it!=_A[i].end(); it++){
+				sum += it->second*tmp[ it->first ];
 			}
 			*(s_begin+i) = sum;
 		}
@@ -183,7 +186,7 @@ class SparseAATFunc:public ExtensibleFunction{
 	}
 	
 	private:
-	Matrix _A; //N by D
+	SparseMat _A; //N by D
 	Matrix _X; //N by K
 	Matrix _AtX; // D by K
 	int _N;
